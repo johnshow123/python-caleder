@@ -1,0 +1,133 @@
+class ProjectOne : 
+			
+  			'''opcode (B31-26)
+			 * Destination register  rd (B25_21)
+			 * 2nd source register  rt (B20_16)
+			 * Source register  rs (B15_11)
+			 * Immediate  (B15_0)'''
+      val = 0 , rs = 0 , rt = 0 , rd = 0 ,opcode = 0 short immediate = 0 ;
+		
+					'''  Machine instructions that will be disassemble'''
+	    def hex_code =[0x022DA822, 0x8EF30018, 0x12A70004, 0x02689820, 0xAD930018, 0x02697824, 0xAD8FFFF4,	0x018C6020, 0x02A4A825, 0x158FFFF6, 0x8E59FFF0 ];
+	    
+      	'''' first instruction begins at address hex 0X7A060'''
+			def start_address = 0x7A060:
+	        print("\nAddress: ")
+
+
+			for hex in range (hex_code) 
+				print("0x%02x", start_address)
+				opcode = BitMask.bitMask31_26(hex) >>> 26;
+
+
+  if <opcode == 0>:
+
+     <
+					rs = BitMask.bitMask25_21(hex);
+					rt = BitMask.bitMask20_16(hex);
+					rd = BitMask.bitMask15_11(hex);
+	
+
+					function = BitMask.bitMask5_0(hex);
+	
+
+					switch <function> {
+					case <32>:
+  					print(" add ");
+						break;
+					case <34>:
+						print(" sub ");
+						break;
+					case <36>:
+						print(" and ");
+						break;
+					case <37>:
+						print(" or  ");
+						break;
+					case <42>:
+						print(" slt ");
+						break;
+					default:
+							print("No data found");
+					}
+
+	       	rd = (rd >>> 11);
+					rs = (rs >>> 21);
+					rt = (rt >>> 16);
+	
+
+					print( rd, rs, rt);
+	
+
+			>
+ else <
+					rs = BitMask.bitMask25_21(hex);
+					rt = BitMask.bitMask20_16(hex);
+					immediate = (short) BitMask.bitMask15_0(hex);
+	
+
+					if <opcode == 4> <
+						print(" beq ");>
+             else if (opcode == 5) <
+						print(" bne ");>
+             else if (opcode == 35) <
+						print(" lw ");>
+             else if (opcode == 43) <
+						print(" sw ");>
+	
+
+					 else <
+						print("No data found");>
+	
+
+					'''' lw and sw'''
+					if <opcode == 35 || opcode == 43> <
+						rt = (rt >>> 16);
+						rs = (rs >>> 21);
+	
+
+						print( rt, immediate, rs);
+						>
+
+					'''' bne and beq'''
+					else if <opcode == 4 || opcode == 5> <
+						rs = (rs >> 21);
+						rt = (rt >> 16);
+						val = (start_address + 4 * immediate + 4);
+						
+						print( rs, rt);
+						print("address 0x%02x   ", val);
+						
+					> else
+	
+
+						print("No data found");
+	
+				>
+				print();
+				start_address += 4;
+			
+
+class BitMask:
+		
+    def bitMask31_26(int hex):
+			return hex & 0xFC000000;
+	
+		def bitMask25_21(int hex): 
+			return hex & 0x03E00000;
+	
+
+		def bitMask20_16(int hex): 
+			return hex & 0x001F0000;
+	
+	  def bitMask15_11(int hex):
+			return hex & 0x0000F800;
+
+		def bitMask5_0(int hex) :
+			return hex & 0x3F;
+	
+		def bitMask15_0(int hex) :
+			return hex & 0xFFFF;
+	
+	
+
